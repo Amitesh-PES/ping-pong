@@ -18,7 +18,7 @@ clock = pygame.time.Clock()
 FPS = 60
 
 # Game loop
-engine = GameEngine(WIDTH, HEIGHT)
+engine = GameEngine(WIDTH, HEIGHT, debug=True)
 
 def main():
     running = True
@@ -31,9 +31,13 @@ def main():
         engine.handle_input()
         engine.update()
         engine.render(SCREEN)
-
         pygame.display.flip()
         clock.tick(FPS)
+
+        # Stop game loop when over
+        if engine.game_over:
+            engine.show_game_over_screen(SCREEN)
+            running = False
 
     pygame.quit()
 
