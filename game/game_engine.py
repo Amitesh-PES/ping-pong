@@ -2,12 +2,13 @@ import pygame
 from .paddle import Paddle
 from .ball import Ball
 
-# Game Engine
-
+# Colors
 WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 
 class GameEngine:
-    def __init__(self, width, height):
+    def __init__(self, width, height, debug=False):
         self.width = width
         self.height = height
         self.paddle_width = 10
@@ -21,6 +22,9 @@ class GameEngine:
         self.ai_score = 0
         self.font = pygame.font.SysFont("Arial", 30)
 
+        # Debug mode toggle
+        self.debug = debug
+
     def handle_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -32,6 +36,7 @@ class GameEngine:
         self.ball.move()
         self.ball.check_collision(self.player, self.ai)
 
+        # Scoring logic
         if self.ball.x <= 0:
             self.ai_score += 1
             self.ball.reset()
@@ -53,3 +58,9 @@ class GameEngine:
         ai_text = self.font.render(str(self.ai_score), True, WHITE)
         screen.blit(player_text, (self.width//4, 20))
         screen.blit(ai_text, (self.width * 3//4, 20))
+
+        # Debug outlines for collision visualization
+        if self.debug:
+            pygame.draw.rect(screen, RED, self.ball.rect(), 1)  # Ball outline
+            pygame.draw.rect(screen, GREEN, self.player.rect(), 1)  # Player outline
+            pygame.draw.rect(screen, GREEN, self.ai.rect(), 1)      # AI outline
