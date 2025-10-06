@@ -15,6 +15,9 @@ class Ball:
         self.velocity_y = random.choice([-3, 3])
 
     def move(self):
+        # Store previous positon for better collision handling
+        prev_x, prev_y = self.x, self.y
+
         self.x += self.velocity_x
         self.y += self.velocity_y
 
@@ -22,8 +25,26 @@ class Ball:
             self.velocity_y *= -1
 
     def check_collision(self, player, ai):
-        if self.rect().colliderect(player.rect()) or self.rect().colliderect(ai.rect()):
-            self.velocity_x *= -1
+        """More reliable collision check that prevents tunneling."""
+        ball_rect = self.rect()
+
+        # Check collision with player
+        if ball_rect.colliderect(player.rect()):
+            self.x = player.x + player.width  # move ball just outside paddle
+            self.velocity_x = abs(self.velocity_x)  # ensure ball moves right
+            self.add_random_angle()
+
+        # Check collision with AI
+        elif ball_rect.colliderect(ai.rect()):
+            self.x = ai.x - self.width  # move ball just outside paddle
+            self.velocity_x = -abs(self.velocity_x)  # ensure ball moves left
+            self.add_random_angle()
+
+    def add_random_angle(self):
+        """Add a small random Y velocity to make gameplay less predictable."""
+        self.velocity_y += random.choice([-1, 0, 1])
+        # Limit Y speed so it doesn't get too fast
+        self.velocity_y = max(-5, min(self.velocity_y, 5))
 
     def reset(self):
         self.x = self.original_x
