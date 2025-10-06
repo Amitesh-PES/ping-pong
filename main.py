@@ -1,6 +1,9 @@
 import pygame
 from game.game_engine import GameEngine
 
+pygame.mixer.pre_init(44100, -16, 2, 512)
+pygame.init()
+
 pygame.init()
 
 WIDTH, HEIGHT = 800, 600

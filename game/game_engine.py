@@ -29,6 +29,13 @@ class GameEngine:
         self.winner_text = None
         self.showing_menu = False  # NEW
 
+        self.sounds = {
+            "paddle_hit": pygame.mixer.Sound("assets/sounds/paddle_hit.wav"),
+            "wall_bounce": pygame.mixer.Sound("assets/sounds/wall_bounce.wav"),
+            "score": pygame.mixer.Sound("assets/sounds/score.wav"),
+            "game_over": pygame.mixer.Sound("assets/sounds/game_over.wav")
+        }
+
     def handle_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -45,9 +52,11 @@ class GameEngine:
 
         if self.ball.x <= 0:
             self.ai_score += 1
+            pygame.mixer.Sound("assets/sounds/score.wav").play()
             self.ball.reset()
         elif self.ball.x >= self.width:
             self.player_score += 1
+            pygame.mixer.Sound("assets/sounds/score.wav").play()
             self.ball.reset()
 
         self.ai.auto_track(self.ball, self.height)
@@ -60,6 +69,7 @@ class GameEngine:
         elif self.ai_score >= self.winning_score:
             self.winner_text = "AI WINS!"
             self.game_over = True
+            pygame.mixer.Sound("assets/sounds/game_over.wav").play()
 
     def render(self, screen):
         pygame.draw.rect(screen, WHITE, self.player.rect())

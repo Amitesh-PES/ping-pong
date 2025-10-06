@@ -23,6 +23,7 @@ class Ball:
 
         if self.y <= 0 or self.y + self.height >= self.screen_height:
             self.velocity_y *= -1
+            pygame.mixer.Sound("assets/sounds/wall_bounce.wav").play()
 
     def check_collision(self, player, ai):
         """More reliable collision check that prevents tunneling."""
@@ -33,12 +34,14 @@ class Ball:
             self.x = player.x + player.width  # move ball just outside paddle
             self.velocity_x = abs(self.velocity_x)  # ensure ball moves right
             self.add_random_angle()
+            pygame.mixer.Sound("assets/sounds/paddle_hit.wav").play()
 
         # Check collision with AI
         elif ball_rect.colliderect(ai.rect()):
             self.x = ai.x - self.width  # move ball just outside paddle
             self.velocity_x = -abs(self.velocity_x)  # ensure ball moves left
             self.add_random_angle()
+            pygame.mixer.Sound("assets/sounds/paddle_hit.wav").play()
 
     def add_random_angle(self):
         """Add a small random Y velocity to make gameplay less predictable."""
